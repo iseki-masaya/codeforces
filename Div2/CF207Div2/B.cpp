@@ -21,59 +21,34 @@
 
 using namespace std;
 
-int N,M;
-vector<vector<int> > vs;
-
 int
 main()
 {
+    int N,M;
     scanf("%d%d",&N,&M);
-    vs.resize(N);
+
+    int color[100050];
+    memset(color, 0, sizeof(color));
     for (int i=0; i<M; ++i) {
-        int s,t,u;
-        scanf("%d%d%d",&s,&t,&u);
-        --s , --t , --u;
-        vs[s].push_back(t);
-        vs[s].push_back(u);
-        vs[t].push_back(s);
-        vs[t].push_back(u);
-        vs[u].push_back(s);
-        vs[u].push_back(t);
-    }
-
-    int color_num[3];
-    vector<int> color(N,-1);
-
-    for (int i=0; i<N; ++i) {
-        if (color[i] != -1) {
-            continue;
+        int a,b,c;
+        scanf("%d%d%d",&a,&b,&c);
+        int *col[3] = {&color[a],&color[b],&color[c]};
+        int f[4] = {};
+        for (int j=0; j<3; ++j) {
+            f[*col[j]]++;
         }
-        queue<int> que;
-        que.push(i);
-        while (!que.empty()) {
-            int idx = que.front();
-            que.pop();
-            memset(color_num, 0, sizeof(color_num));
-            for (int j=0; j<vs[idx].size(); ++j) {
-                int v = vs[idx][j];
-                if (color[v] != -1) {
-                    color_num[color[v]]++;
-                }
-                else {
-                    que.push(v);
-                }
-            }
-            for (int j=0; j<3; ++j) {
-                if (color_num[j] == 0) {
-                    color[idx] = j;
+        for (int j=0; j<3; ++j) {
+            for (int k=1; k<4; ++k) {
+                if (f[k] == 0 && *col[j] == 0) {
+                    *col[j] = k;
+                    f[k]++;
                     break;
                 }
             }
         }
     }
-
-    for (int i=0; i<N; ++i) {
-        printf("%d%c",color[i]+1,i==N-1 ? '\n' : ' ');
+    for (int i=1; i<=N; ++i) {
+        printf("%d%c",color[i],i==N?'\n':' ');
     }
     return 0;
 }
